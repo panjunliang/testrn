@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, Image } from "react-native";
 
 import Navi from "./src/Navigation";
 import store from "./src/pages/store";
 import { Provider } from "react-redux";
+import { SplashScreen } from "expo";
 
 export default class App extends Component<any, any> {
   constructor(props) {

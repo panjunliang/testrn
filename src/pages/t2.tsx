@@ -1,73 +1,155 @@
 import React, { Component } from "react";
-// import Drawer from "react-native-drawer";
-import { StyleSheet, Text, View, Button } from "react-native";
-import { connect } from "react-redux";
-import { addCount, reduceCount } from "./store/actions/countActions";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  ScrollView,
+  Keyboard
+} from "react-native";
 
-function mapStateToProps(state) {
-  return {
-    count: state.count.count
-  };
-}
-
-function mapActionToProps(dispatch) {
-  return {
-    addCount: () => dispatch(addCount()),
-    reduceCount: num => dispatch(reduceCount(num))
-  };
-}
-
-class t2 extends Component<any, any> {
+export default class t2 extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      flag: false
+      inp: "",
+      arr: ["", "", ""]
     };
+  }
+
+  static navigationOptions = {
+    headerTitle: (
+      <Text style={{ flex: 1, textAlign: "center", fontSize: 20 }}>
+        CoinLoan
+      </Text>
+    ),
+    headerStyle: {
+      backgroundColor: "#f4511e"
+    },
+    headerTintColor: "#fff"
+  };
+
+  _changeVal(text) {
+    this.setState({ inp: text });
+  }
+
+  _modifyArray(text) {
+    let brr = [];
+    if (text[0]) {
+      brr[0] = text[0];
+    } else {
+      brr[0] = "";
+    }
+    if (text[1]) {
+      brr[1] = text[1];
+    } else {
+      brr[1] = "";
+    }
+    if (text[2]) {
+      brr[2] = text[2];
+    } else {
+      brr[2] = "";
+    }
+
+    this.setState({ inp: text, arr: brr });
   }
 
   render() {
     const { navigate } = this.props.navigation;
-    // console.log(this.props);
-    let content = (
-      <View style={{ width: 200, height: 400, backgroundColor: "blue" }}>
-        <Text style={{ color: "red" }}>我是抽屉功能</Text>
-      </View>
-    );
+    const { goBack } = this.props.navigation;
+
     return (
-      <View>
-        <Text>t2 --{this.props.count}</Text>
-        <Button
-          title="jump"
-          onPress={() => {
-            // this.setState({ flag: true });
-            this.props.reduceCount(4);
-          }}
-        ></Button>
-        {/* <Drawer
-          type="overlay"
-          open={true}
-          content={content}
-          tapToClose={true}
-          panOpenMask={0.4}
-          openDrawerOffset={0.4} // 20% gap on the right side of drawer
-          panCloseMask={0.2}
-          closedDrawerOffset={0}
-          styles={drawerStyles}
-          tweenHandler={ratio => ({ main: { opacity: (2 - ratio) / 2 } })}
-        >
-          <Text>我是功能</Text>
-        </Drawer> */}
-      </View>
+      <ScrollView>
+        <View>
+          <View style={styles.pt}>
+            <Text style={{ flex: 1, fontSize: 16 }}>验证码</Text>
+
+            {/* <TextInput
+              style={{ flex: 2, borderWidth: 1, borderColor: "gray" }}
+              value={this.state.inp}
+              onChangeText={newText => this._changeVal(newText)}
+              maxLength={1}
+            ></TextInput> */}
+            <View style={{ flexDirection: "row", flex: 2 }}>
+              {this.state.arr.map((item, i) => {
+                return (
+                  <Text key={i} style={styles.tb}>
+                    {item}
+                  </Text>
+                );
+              })}
+              <TextInput
+                style={{
+                  height: 40,
+                  backgroundColor: "transparent",
+                  color: "transparent",
+                  position: "absolute",
+                  width: 120
+                }}
+                value={this.state.inp}
+                maxLength={3}
+                onChangeText={text => {
+                  this._modifyArray(text);
+                }}
+                caretHidden={true}
+              ></TextInput>
+            </View>
+          </View>
+
+          <View style={styles.btnbox}>
+            <View style={styles.btnWid}>
+              <Button
+                title="返回"
+                // onPress={() => this.props.navigation.toggleDrawer()}
+                onPress={() => goBack()}
+              />
+            </View>
+
+            <View style={styles.btnWid}>
+              <Button
+                title="下一步"
+                onPress={() => {
+                  let brr = ["", "", ""];
+                  this.setState({ arr: brr, inp: "" });
+                  navigate("psw");
+                }}
+              ></Button>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
     );
   }
 }
 
-const drawerStyles = {
-  drawer: { shadowColor: "#0000ff", shadowOpacity: 0.8, shadowRadius: 3 },
-  main: { paddingLeft: 0 }
-};
+const styles = StyleSheet.create({
+  pt: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginTop: 60,
+    marginBottom: 60
+  },
 
-export default connect(
-  mapStateToProps,
-  mapActionToProps
-)(t2);
+  btnbox: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 20
+  },
+  btnWid: {
+    width: 100,
+    height: 40
+  },
+  tb: {
+    width: 30,
+    height: 40,
+    borderWidth: 1,
+    marginRight: 10,
+    textAlign: "center",
+    lineHeight: 40,
+    fontSize: 20
+  }
+});
